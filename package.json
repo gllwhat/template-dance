@@ -9,9 +9,18 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["onCommand", "onView"],
+  "activationEvents": [
+    "onCommand",
+    "onView"
+  ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsWelcome": [
+      {
+        "view": "nodeDependencies",
+        "contents": "No node templates found.\n[Add Template](command:template-dance.addTemplate)"
+      }
+    ],
     "commands": [
       {
         "command": "template-dance.hello",
@@ -32,30 +41,30 @@
         "command": "template-dance.editTemplate",
         "title": "edit template",
         "icon": "./icon-edit.svg"
-      }
-      ,
+      },
       {
         "command": "template-dance.viewTemplate",
         "title": "view template",
         "icon": "./icon-browse.svg"
-      }
-      ,
+      },
       {
         "command": "template-dance.deleteTemplate",
         "title": "delete template",
         "icon": "./icon-delete.svg"
-      }
-      ,
+      },
       {
         "command": "template-dance.useTemplate",
         "title": "use template",
         "icon": "./icon-check.svg"
-      }
-      ,
+      },
       {
         "command": "template-dance.searchTemplate",
         "title": "search template",
         "icon": "./icon-search.svg"
+      },
+      {
+        "command": "template-dance.selectTemplate",
+        "title": "select template"
       }
     ],
     "viewsContainers": {
@@ -66,9 +75,7 @@
           "icon": "./icon-dark.svg"
         }
       ]
-      
     },
-    
     "views": {
       "template-dance": [
         {
@@ -86,61 +93,50 @@
     "menus": {
       "view/title": [
         {
-          "command": "template-dance.refreshTemplate",  
+          "command": "template-dance.refreshTemplate",
           "group": "navigation",
-          "when": "view == templateDanceTreeView"          
+          "when": "view == templateDanceTreeView"
         },
         {
-          "command": "template-dance.addTemplate",  
+          "command": "template-dance.addTemplate",
           "group": "navigation",
-          "when": "view == templateDanceTreeView"   
-        },
-        {
-          "command": "template-dance.viewTemplate",  
-          "group": "navigation",
-          "when": "templateItemContext == true"          
-        },
-        {
-          "command": "template-dance.editTemplate",  
-          "group": "navigation",
-          "when": "templateItemContext == true"          
-        },
-        {
-          "command": "template-dance.deleteTemplate",  
-          "group": "navigation",
-          "when": "templateItemContext == true"          
-        },
-        {
-          "command": "template-dance.useTemplate",  
-          "group": "navigation",
-          "when": "templateItemContext == true"          
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.searchTemplate",
           "group": "navigation",
-          "when": "view == templateDanceTreeView"   
+          "when": "view == templateDanceTreeView"
         }
-      
-        
       ],
       "view/item/context": [
         {
-          "command": "template-dance.deleteTemplate",  
-          "group": "item-nav"
+          "command": "template-dance.viewTemplate",
+          "group": "inline",
+          "when": "templateItemContext == true"
         },
         {
-          "command": "template-dance.editTemplate",  
-          "group": "item-nav" 
+          "command": "template-dance.editTemplate",
+          "group": "inline",
+          "when": "templateItemContext == true"
         },
         {
-          "command": "template-dance.viewTemplate",  
-          "group": "item-nav"
+          "command": "template-dance.deleteTemplate",
+          "group": "inline",
+          "when": "templateItemContext == true"
+        },
+        {
+          "command": "template-dance.addTemplate",
+          "group": "inline",
+          "when": "templateItemContext == true"
+        },
+        {
+          "command": "template-dance.useTemplate",
+          "group": "inline",
+          "when": "templateItemContext == true"
         }
       ]
     }
-   
   },
-  
   "scripts": {
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",

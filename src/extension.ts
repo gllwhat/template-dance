@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import {Template, TemplateDanceTreeDataProvider} from "./templateClass"
+import { Template, TemplateDanceTreeDataProvider } from "./templateClass"
 
 export function activate(context: vscode.ExtensionContext) {
-   
+
   const templateDanceTreeDataProvider = new TemplateDanceTreeDataProvider(context);
   const templateDanceTreeView = vscode.window.createTreeView('templateDanceTreeView', {
     treeDataProvider: templateDanceTreeDataProvider,
@@ -13,17 +13,34 @@ export function activate(context: vscode.ExtensionContext) {
 
   // 添加
   context.subscriptions.push(
-    vscode.commands.registerCommand('template-dance.addTemplate', async () => {
-      const parent = await vscode.window.showInputBox({ prompt: '请输入父节点名称' });
-      if(parent && templateDanceTreeDataProvider.validateId(parent)) {
-        vscode.window.showErrorMessage(`添加失败，不存在'${parent}'节点`)
-        return
+    vscode.commands.registerCommand('template-dance.addTemplate', async (item) => {
+      let parent
+      if(templateDanceTreeDataProvider.selectId || item) {
+        let template = item ? item : templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
+        parent = await vscode.window.showInputBox({ value: template.name  });
+      } else {
+        parent = await vscode.window.showInputBox({ prompt: '请输入父节点名称' });
+      }
+      let id
+      console.log("add", parent)
+      if (parent) {
+        let res = templateDanceTreeDataProvider.initChildId(parent)
+        console.log("add ====> ", res, typeof res === "object")
+        if (typeof res === "object") {
+          id = res.childId
+          parent = res.parentId
+        } else {
+          vscode.window.showErrorMessage(`添加失败，不存在'${parent}'节点`)
+          return
+        }
+      } else {
+        id = templateDanceTreeDataProvider.initId()
       }
       const name = await vscode.window.showInputBox({ prompt: '请输入模板名称' });
       if (!name) {
         return;
       }
-      if(!templateDanceTreeDataProvider.validateId(name)) {
+      if (!templateDanceTreeDataProvider.validateName(name)) {
         vscode.window.showErrorMessage("添加失败，模板重名")
         return
       }
@@ -31,34 +48,34 @@ export function activate(context: vscode.ExtensionContext) {
       if (!content) {
         return;
       }
-      const template = new Template(name, name, content, parent);
+
+      const template = new Template(id, name, content, parent);
       console.log('template =====>', template)
       templateDanceTreeDataProvider.add(template);
     })
   );
-  
+
   // 编辑
-  context.subscriptions.push(vscode.commands.registerCommand("template-dance.editTemplate", async () => {
-    let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
-    console.log('templateDanceTreeDataProvider ====>', templateDanceTreeDataProvider)
-   return
-    // let name = await vscode.window.showInputBox({ value: template.name });
-    //   if (!template.name) {
-    //     return;
-    //   }
-    //   let content = await vscode.window.showInputBox({ value: template.content });
-    //   if (!template.content) {
-    //     return;
-    //   }
-    //   templateDanceTreeDataProvider.edit(template.id, name, content);
+  context.subscriptions.push(vscode.commands.registerCommand("template-dance.editTemplate", async (item) => {
+    // let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
+    let name = await vscode.window.showInputBox({ value: item.name });
+    if (!item.name) {
+      return;
+    }
+    let content = await vscode.window.showInputBox({ value: item.content });
+    if (!item.content) {
+      return;
+    }
+    templateDanceTreeDataProvider.edit(item.id, name, content);
   }))
 
   context.subscriptions.push(vscode.commands.registerCommand("template-dance.hello", () => {
     vscode.window.showInformationMessage("Hello")
   }))
-  
+
   // 选中
-  templateDanceTreeView.onDidChangeSelection((e: vscode.TreeViewSelectionChangeEvent<Template>) => {
+  const changeSelectionFun = (e: vscode.TreeViewSelectionChangeEvent<Template>) => {
+    console.log("11 onDidChangeSelection e ", e)
     if (e.selection.length > 0) {
       const template = e.selection[0];
       templateDanceTreeDataProvider.selectId = template.id
@@ -66,29 +83,31 @@ export function activate(context: vscode.ExtensionContext) {
     } else {
       vscode.commands.executeCommand('setContext', 'templateItemContext', false);
     }
-  });
-  
+  }
+  templateDanceTreeView.onDidChangeSelection(changeSelectionFun);
+
+
   // 查看
-  context.subscriptions.push(vscode.commands.registerCommand("template-dance.viewTemplate", () => {
-    let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
-    const panel = vscode.window.createWebviewPanel("view", `view: ${template.name}`,  vscode.ViewColumn.One,{
+  context.subscriptions.push(vscode.commands.registerCommand("template-dance.viewTemplate", (item) => {
+    // let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
+    const panel = vscode.window.createWebviewPanel("view", `view: ${item.name}`, vscode.ViewColumn.One, {
       enableScripts: true, // 允许运行脚本
       retainContextWhenHidden: false, // 隐藏时保留内容状态
     })
-    panel.webview.html = `<html><body><div>${template.content}</div></body></html>`;
+    panel.webview.html = `<html><body><div>${item.content}</div></body></html>`;
   }))
-  
+
   // 删除
-  context.subscriptions.push(vscode.commands.registerCommand("template-dance.deleteTemplate", async () => {
-    let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
-    console.log('template =====>', template)
-    templateDanceTreeDataProvider.delete(template);
+  context.subscriptions.push(vscode.commands.registerCommand("template-dance.deleteTemplate", async (item) => {
+    // let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
+    console.log('template =====>', item)
+    templateDanceTreeDataProvider.delete(item);
   }))
-  
+
   // 使用
-  context.subscriptions.push(vscode.commands.registerCommand("template-dance.useTemplate", async () => {
-    let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
-    console.log('template =====>', template)
+  context.subscriptions.push(vscode.commands.registerCommand("template-dance.useTemplate", async (item) => {
+    // let template = templateDanceTreeDataProvider.getItem(templateDanceTreeDataProvider.selectId)
+    console.log('template =====>', item)
     // 获取当前激活的编辑器
     const editor = vscode.window.activeTextEditor;
     if (editor) {
@@ -97,7 +116,7 @@ export function activate(context: vscode.ExtensionContext) {
       // 创建编辑器修改对象
       const edit = new vscode.WorkspaceEdit();
       // 在光标所在位置插入文本
-      edit.insert(editor.document.uri, position, template.content);
+      edit.insert(editor.document.uri, position, item.content);
       // 应用修改
       await vscode.workspace.applyEdit(edit);
       const selection = new vscode.Selection(position, editor.selection.active);
