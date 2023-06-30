@@ -136,4 +136,32 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand("template-dance.refreshTemplate", async () => {
     templateDanceTreeDataProvider.refresh();
   }))
+
+  // import
+  context.subscriptions.push(vscode.commands.registerCommand("template-dance.import", async () => {
+    const fileUris = await vscode.window.showOpenDialog({
+      canSelectFiles: true,
+      canSelectFolders: false,
+      canSelectMany: false,
+      filters: {
+        'Tree Files': ['json']
+      }
+    });
+    console.log('import fileUris', fileUris)
+    const fileUri = fileUris[0];
+    const fileContent = await vscode.workspace.fs.readFile(fileUri);
+    const treeData = JSON.parse(fileContent.toString());
+    console.log('import treeData', treeData)
+    console.log('import validateTreeData', templateDanceTreeDataProvider.validateTreeData(treeData))
+  }))
+  
+  // revoke
+  context.subscriptions.push(vscode.commands.registerCommand("template-dance.revoke", async () => {
+    let templatesOld = templateDanceTreeDataProvider.templatesOld
+    console.log('revoke templatesOld', templatesOld)
+    if(templatesOld.length) {
+      templateDanceTreeDataProvider.revoke()
+    }
+  }))
+  
 }
