@@ -75,7 +75,13 @@
       {
         "command": "template-dance.selectTemplate",
         "title": "select template"
+      },
+      {
+        "command": "template-dance.export",
+        "title": "use template",
+        "icon": "./src/icon/icon-export.svg"
       }
+      
     ],
     "viewsContainers": {
       "activitybar": [
@@ -120,6 +126,10 @@
         },
         {
           "command": "template-dance.revoke",
+          "group": "navigation"
+        },
+        {
+          "command": "template-dance.export",
           "group": "navigation"
         }
       ],

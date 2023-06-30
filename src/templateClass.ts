@@ -54,7 +54,7 @@ export class TemplateDanceTreeDataProvider implements vscode.TreeDataProvider<Te
 
   constructor(private readonly context: vscode.ExtensionContext) {
     //如果出现了诡异的问题出现重复id会报错，所以在这里先进行一次查重
-    // const savedTemplates = this.context.globalState.get<TemplateData[]>('templates', []);
+    const savedTemplates = this.context.globalState.get<TemplateData[]>('templates', []);
     // let temObj = {}
     // let arr = []
     // savedTemplates.forEach(item => {
@@ -169,19 +169,19 @@ export class TemplateDanceTreeDataProvider implements vscode.TreeDataProvider<Te
   checkData(data, msg = ""): boolean {
     console.log("checkData data", data)
     let res = msg
-    if(this.importTemMap.has(data.id) || this.importTemMap.has(data.name)) {
+    if (this.importTemMap.has(data.id) || this.importTemMap.has(data.name)) {
       res = `${res}${res ? "。" : ""} ${data.id}或${data.name}重复。`
     } else {
       this.importTemMap.set(data.id, 1)
       this.importTemMap.set(data.name, 1)
     }
     if (data.hasChild && data.children.length === 0) {
-      res = `${res} ${res ? "。" : ""} ${JSON.stringify({id: data.id, name: data.name})}`
+      res = `${res} ${res ? "。" : ""} ${JSON.stringify({ id: data.id, name: data.name })}`
     }
     if (data.hasChild) {
       for (let i = 0; i < data.children.length; i++) {
         if (data.children[i].parent && data.children[i].parent !== data.id) {
-          res = `${res} ${res ? "。" : ""} ${JSON.stringify({id: data.children[i].id, name: data.children[i].name})}`
+          res = `${res} ${res ? "。" : ""} ${JSON.stringify({ id: data.children[i].id, name: data.children[i].name })}`
         }
         this.checkData(data.children[i], res)
       }
@@ -191,12 +191,12 @@ export class TemplateDanceTreeDataProvider implements vscode.TreeDataProvider<Te
   }
 
   formatTreeData(treeData) {
-    if(!treeData) {
+    if (!treeData) {
       return
     }
-    for(let i = 0; i < treeData.length; i++) {
+    for (let i = 0; i < treeData.length; i++) {
       treeData[i] = new Template(treeData[i].id, treeData[i].name, treeData[i].content, treeData[i].parent, treeData[i].children, treeData[i].hasChild)
-      if(treeData[i].hasChild) {
+      if (treeData[i].hasChild) {
         this.formatTreeData(treeData[i].children)
       }
     }
@@ -238,13 +238,13 @@ export class TemplateDanceTreeDataProvider implements vscode.TreeDataProvider<Te
       vscode.window.showErrorMessage(`添加失败，以下数据hasChild/children/parent字段有误：${errorMsg2}`)
       return
     }
-    
+
     // 获取全部的name和id，平摊成一层，进行比对
     const stack = [...this.templates]
     let errorMsg3 = ""
     while (stack.length) {
       const node = stack.pop()
-      if(this.importTemMap.has(node.id) || this.importTemMap.has(node.name)) {
+      if (this.importTemMap.has(node.id) || this.importTemMap.has(node.name)) {
         errorMsg3 = `${errorMsg3}${errorMsg3 ? "。" : ""} ${node.id}或${node.name}已存在`
       }
       if (node.children && node.children.length > 0) {
@@ -374,14 +374,29 @@ export class TemplateDanceTreeDataProvider implements vscode.TreeDataProvider<Te
     this.refresh();
   }
 
-  edit(id: string, name: string, content: string): void {
-    this.templates.forEach(item => {
-      if (item.id === id) {
-        item.content = content
+  editFun(templates, id, content) {
+    for (let i = 0; i < templates.length; i++) {
+      if (templates[i].id === id) {
+        templates[i].content = content
+        this.saveTemplates();
+        this.refresh();
+        return
       }
-    })
-    this.saveTemplates();
-    this.refresh();
+      if (templates[i].hasChild) {
+        this.editFun(templates[i].children, id, content)
+      }
+    }
+
+  }
+
+  edit(id: string, name: string, content: string): void {
+    // this.templates.forEach(item => {
+    //   if (item.id === id) {
+    //     item.content = content
+    //   }
+    // })
+    this.editFun(this.templates, id, content)
+
   }
 
   deleteFun(element: Template, _templates, parentNode): void {
@@ -428,17 +443,82 @@ export class TemplateDanceTreeDataProvider implements vscode.TreeDataProvider<Te
         let node = stack.shift()
         if (node.name.toLowerCase().includes(keyword.toLowerCase())) {
           res.push(node)
-          break
         }
         if (node.hasChild) {
           stack = [...stack, ...node?.children]
         }
       }
+      console.log('search res', res)
       this.templates = res
       // 根据关键词筛选模板
       // this.templates = data.filter(template => template.name.toLowerCase().includes(keyword.toLowerCase()));
     }
     this._onDidChangeTreeData.fire();
+  }
+
+  getTemplatesHandle(datas) {
+    let res = [...datas]
+    console.log('getTemplatesHandle res1', res)
+    for (let i = 0; i < res.length; i++) {
+      let hasChild = res[i].hasChild, children = res[i].children
+      if (!res[i].children || (res[i].children instanceof Array && res[i].children.length === 0)) {
+        hasChild = false
+        children = []
+      } else {
+        children = this.getTemplatesHandle(res[i].children)
+      }
+      res[i] = {
+        ...res[i],
+        hasChild,
+        children
+      }
+    }
+    console.log('getTemplatesHandle res2', res)
+    return res
+  }
+
+  getTemplates() {
+    // console.log('getTemplates =====>', this.getTemplatesHandle(this.templates))
+    if(this.templates.length) {
+      return this.getTemplatesHandle(this.templates)
+    } else {
+      return [
+        {
+          "id": "0",
+          "name": "demo1",
+          "content": "",
+          "parent": "",
+          "children": [
+            {
+              "id": "0-0",
+              "name": "demo1-child1",
+              "content": "child content 111",
+              "parent": "0",
+              "hasChild": false,
+              "children": []
+            },
+            {
+              "id": "0-1",
+              "name": "demo1-child2",
+              "content": "child content 222",
+              "parent": "0",
+              "hasChild": true,
+              "children": [
+                {
+                  "id": "0-1-0",
+                  "name": "demo1-child2-child1",
+                  "content": "demo content",
+                  "parent": "0-1",
+                  "hasChild": false,
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "hasChild": true
+        }
+      ]
+    }
   }
 
 }

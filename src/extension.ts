@@ -163,5 +163,23 @@ export function activate(context: vscode.ExtensionContext) {
       templateDanceTreeDataProvider.revoke()
     }
   }))
+
+  // export
+  context.subscriptions.push(vscode.commands.registerCommand("template-dance.export", async () => {
+    const fileUri = await vscode.window.showSaveDialog({
+      defaultUri: vscode.Uri.file('templates.json'),
+      filters: {
+        'JSON Files': ['json']
+      }
+    });
+    if (!fileUri) {
+      return;
+    }
+    const templates = templateDanceTreeDataProvider.getTemplates();
+    const json = JSON.stringify(templates, null, 2);
+    await vscode.workspace.fs.writeFile(fileUri, Buffer.from(json));
+    vscode.window.showInformationMessage('Templates exported successfully!');
+  }));
+  
   
 }
