@@ -122,7 +122,7 @@ export class TemplateDanceTreeDataProvider implements vscode.TreeDataProvider<Te
       tooltip: tooltip,
       children: element.children || null,
       collapsibleState: !element.hasChild ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed,
-      iconPath: vscode.Uri.file(this.context.asAbsolutePath('icon-code2.svg')),
+      iconPath: vscode.Uri.file(this.context.asAbsolutePath('./src/icon/icon-code2.svg')),
       // 添加 mouseover 事件处理函数
       onmouseover: (event) => {
         this.hoverId = item.id;

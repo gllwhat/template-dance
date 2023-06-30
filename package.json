@@ -25,52 +25,52 @@
       {
         "command": "template-dance.hello",
         "title": "Sey Hello",
-        "icon": "./icon-dark.svg"
+        "icon": "./src/icon/icon-dark.svg"
       },
       {
         "command": "template-dance.addTemplate",
         "title": "Add template",
-        "icon": "./icon-add.svg"
+        "icon": "./src/icon/icon-add.svg"
       },
       {
         "command": "template-dance.import",
         "title": "import template",
-        "icon": "./icon-import.svg"
+        "icon": "./src/icon/icon-import.svg"
       },
       {
         "command": "template-dance.revoke",
         "title": "revoke",
-        "icon": "./icon-revoke.svg"
+        "icon": "./src/icon/icon-revoke.svg"
       },
       {
         "command": "template-dance.searchTemplate",
         "title": "search template",
-        "icon": "./icon-search.svg"
+        "icon": "./src/icon/icon-search.svg"
       },
       {
         "command": "template-dance.refreshTemplate",
         "title": "refresh template",
-        "icon": "./icon-refresh.svg"
+        "icon": "./src/icon/icon-refresh.svg"
       },
       {
         "command": "template-dance.editTemplate",
         "title": "edit template",
-        "icon": "./icon-edit.svg"
+        "icon": "./src/icon/icon-edit.svg"
       },
       {
         "command": "template-dance.viewTemplate",
         "title": "view template",
-        "icon": "./icon-browse.svg"
+        "icon": "./src/icon/icon-browse.svg"
       },
       {
         "command": "template-dance.deleteTemplate",
         "title": "delete template",
-        "icon": "./icon-delete.svg"
+        "icon": "./src/icon/icon-delete.svg"
       },
       {
         "command": "template-dance.useTemplate",
         "title": "use template",
-        "icon": "./icon-check.svg"
+        "icon": "./src/icon/icon-check.svg"
       },
       {
         "command": "template-dance.selectTemplate",
@@ -82,7 +82,7 @@
         {
           "id": "template-dance",
           "title": "template Dance",
-          "icon": "./icon-dark.svg"
+          "icon": "./src/icon/icon-dark.svg"
         }
       ]
     },
@@ -91,7 +91,7 @@
         {
           "id": "templateDanceTreeView",
           "name": "template Dance",
-          "icon": "./icon-dark.svg",
+          "icon": "./src/icon/icon-dark.svg",
           "type": "tree"
         },
         {
