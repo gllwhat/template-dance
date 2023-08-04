@@ -2,7 +2,7 @@
   "name": "template-dance",
   "displayName": "template dance",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "koalaG",
   "engines": {
     "vscode": "^1.80.0"
@@ -154,27 +154,33 @@
       "view/title": [
         {
           "command": "template-dance.addTemplate",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.searchTemplate",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.refreshTemplate",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.import",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.revoke",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.export",
-          "group": "navigation"
+          "group": "navigation",
+          "when": "view == templateDanceTreeView"
         }
       ],
       "view/item/context": [
