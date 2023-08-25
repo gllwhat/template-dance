@@ -64,7 +64,7 @@ function activate(context) {
         if (!content) {
           return;
         }
-        content = content === undefined ? "" : content.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>');
+        // content = content === undefined ? "" : content.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>');
         const template = new Template(id, name, content, parent);
         console.log("template =====>", template);
         templateDanceTreeDataProvider.add(template);
@@ -86,7 +86,7 @@ function activate(context) {
         let content = await vscode.window.showInputBox({
           value: item.content, prompt: "请输入模板内容", ignoreFocusOut: true,
         });
-        content = content === undefined ? "" : content.replace(/ /g, '&nbsp;');
+        // content = content === undefined ? "" : content.replace(/ /g, '&nbsp;');
         console.log('edit content', content)
         templateDanceTreeDataProvider.edit(item.id, name, content);
       }
@@ -131,7 +131,7 @@ function activate(context) {
           retainContextWhenHidden: false, // 隐藏时保留内容状态
         }
       );
-      let content = item.content === undefined ? "" : item.content
+      let content = item.content === undefined ? "" : item.content === undefined ? "" : item.content.replace(/ /g, '&nbsp;')
       panel.webview.html = `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -189,8 +189,8 @@ function activate(context) {
           // 创建编辑器修改对象
           const edit = new vscode.WorkspaceEdit();
           // 在光标所在位置插入文本
-          let content = item.content.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, ' ').replace(/<br>/g, '\n')
-          edit.insert(editor.document.uri, position, content);
+          // let content = item.content.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, ' ').replace(/<br>/g, '\n')
+          edit.insert(editor.document.uri, position, item.content);
           // 应用修改
           await vscode.workspace.applyEdit(edit);
           const selection = new vscode.Selection(
