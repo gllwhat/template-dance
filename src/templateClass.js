@@ -51,6 +51,7 @@ class TemplateDanceTreeDataProvider {
   }
 
   saveTemplates() {
+    // 存储本地
     const data = this.templates.map(t => t.toData());
     this.context.globalState.update('templates', data);
     console.log("saveTemplates this.templates", this.templates);

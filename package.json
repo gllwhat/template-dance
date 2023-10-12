@@ -2,8 +2,20 @@
   "name": "template-dance",
   "displayName": "template dance",
   "description": "",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "koalaG",
+  "homepage": "https://github.com/gllwhat/template-dance/blob/main/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gllwhat/template-dance.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gllwhat/template-dance/issues"
+  },
+  "sponsor": {
+    "url": "https://github.com/gllwhat"
+  },
+  "icon": "src/icon/animal_koala_icon.svg",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -15,10 +27,6 @@
     "onView"
   ],
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gllwhat/template-dance.git"
-  },
   "main": "./src/extension.js",
   "contributes": {
     "themes": [
@@ -27,12 +35,6 @@
         "label": "My Theme",
         "uiTheme": "vs-dark",
         "path": "./themes/myTheme.json"
-      }
-    ],
-    "viewsWelcome": [
-      {
-        "view": "nodeDependencies",
-        "contents": "No node templates found.\n[Add Template](command:template-dance.addTemplate)"
       }
     ],
     "commands": [
@@ -44,74 +46,47 @@
       {
         "command": "template-dance.addTemplate",
         "title": "Add template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-add.svg",
-          "light": "./src/icon/icon-light-add.svg"
-        }
+        "icon": "$(add)"
       },
       {
         "command": "template-dance.import",
         "title": "import template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-import.svg",
-          "light": "./src/icon/icon-light-import.svg"
-        }
+        "icon": "$(cloud-upload)"
       },
       {
         "command": "template-dance.revoke",
         "title": "revoke",
-        "icon": {
-          "dark": "./src/icon/icon-dark-revoke.svg",
-          "light": "./src/icon/icon-light-revoke.svg"
-        }
+        "icon": "$(discard)"
       },
       {
         "command": "template-dance.searchTemplate",
         "title": "search template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-search.svg",
-          "light": "./src/icon/icon-light-search.svg"
-        }
+        "icon": "$(search)"
       },
       {
         "command": "template-dance.refreshTemplate",
         "title": "refresh template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-refresh.svg",
-          "light": "./src/icon/icon-light-refresh.svg"
-        }
+        "icon": "$(refresh)"
       },
       {
         "command": "template-dance.editTemplate",
         "title": "edit template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-edit.svg",
-          "light": "./src/icon/icon-light-edit.svg"
-        }
+        "icon": "$(edit)"
       },
       {
         "command": "template-dance.viewTemplate",
         "title": "view template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-browse.svg",
-          "light": "./src/icon/icon-light-browse.svg"
-        }
+        "icon": "$(eye)"
       },
       {
         "command": "template-dance.deleteTemplate",
         "title": "delete template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-delete.svg",
-          "light": "./src/icon/icon-light-delete.svg"
-        }
+        "icon": "$(trash)"
       },
       {
         "command": "template-dance.useTemplate",
         "title": "use template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-check.svg",
-          "light": "./src/icon/icon-light-check.svg"
-        }
+        "icon": "$(check)"
       },
       {
         "command": "template-dance.selectTemplate",
@@ -119,13 +94,13 @@
       },
       {
         "command": "template-dance.export",
-        "title": "use template",
-        "icon": {
-          "dark": "./src/icon/icon-dark-export.svg",
-          "light": "./src/icon/icon-light-export.svg"
-        }
+        "title": "export template",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "template-dance.contactDeveloper",
+        "title": "contact developer"
       }
-      
     ],
     "viewsContainers": {
       "activitybar": [
@@ -141,12 +116,12 @@
         {
           "id": "templateDanceTreeView",
           "name": "template Dance",
-          "icon": "./src/icon/icon-dark.svg",
           "type": "tree"
         },
         {
           "id": "help",
-          "name": "help"
+          "name": "help",
+          "visibility": "collapsed"
         }
       ]
     },
@@ -187,27 +162,27 @@
         {
           "command": "template-dance.viewTemplate",
           "group": "inline",
-          "when": "templateItemContext == true"
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.editTemplate",
           "group": "inline",
-          "when": "templateItemContext == true"
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.deleteTemplate",
           "group": "inline",
-          "when": "templateItemContext == true"
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.addTemplate",
           "group": "inline",
-          "when": "templateItemContext == true"
+          "when": "view == templateDanceTreeView"
         },
         {
           "command": "template-dance.useTemplate",
           "group": "inline",
-          "when": "templateItemContext == true"
+          "when": "view == templateDanceTreeView"
         }
       ]
     }
@@ -218,14 +193,17 @@
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.80.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "20.2.5",
+    "@types/vscode": "^1.80.0",
+    "@vscode/test-electron": "^2.3.2",
     "eslint": "^8.41.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.1.3",
-    "@vscode/test-electron": "^2.3.2"
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "vscode-ext-help-and-feedback-view": "^1.0.1"
   }
 }

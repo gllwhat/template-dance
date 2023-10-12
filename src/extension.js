@@ -1,7 +1,9 @@
 const vscode = require("vscode");
 const { Template, TemplateDanceTreeDataProvider } = require("./templateClass");
+const { registerHelpAndFeedbackView } = require("./helpClass")
 
 function activate(context) {
+
   const templateDanceTreeDataProvider = new TemplateDanceTreeDataProvider(
     context
   );
@@ -285,5 +287,9 @@ function activate(context) {
       vscode.window.showInformationMessage("Templates exported successfully!");
     })
   );
+
+  // help
+  registerHelpAndFeedbackView(context);
+
 }
 module.exports = { activate };
