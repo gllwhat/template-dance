@@ -2,7 +2,7 @@
   "name": "template-dance",
   "displayName": "template dance",
   "description": "",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "koalaG",
   "homepage": "https://github.com/gllwhat/template-dance/blob/main/README.md",
   "repository": {
@@ -15,7 +15,7 @@
   "sponsor": {
     "url": "https://github.com/gllwhat"
   },
-  "icon": "src/icon/animal_koala_icon.svg",
+  "icon": "src/icon/animal_koala_icon.png",
   "engines": {
     "vscode": "^1.80.0"
   },
